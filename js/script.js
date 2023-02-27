@@ -57,6 +57,7 @@ const months = [
 
 const eventsArr = [];
 getEvents();
+//or getEvents
 console.log(eventsArr);
 
 //function to add days in days with class day and prev-date next-date on previous month and next month days and active on today
@@ -266,6 +267,8 @@ function updateEvents(date) {
   }
   eventsContainer.innerHTML = events;
   saveEvents();
+  uploadEvents();
+
 }
 
 //function to add event
@@ -283,7 +286,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-//allow 50 chars in eventtitle
+//allow 60 chars in eventtitle
 addEventTitle.addEventListener("input", (e) => {
   addEventTitle.value = addEventTitle.value.slice(0, 60);
 });
@@ -444,6 +447,43 @@ function getEvents() {
     return;
   }
   eventsArr.push(...JSON.parse(localStorage.getItem("events")));
+}
+
+//function to upload event through
+//function downloadEvents(){}
+function downloadEvents() {
+    if (localStorage.getItem("events") === null) {
+      return;
+    }
+  $.ajax({
+    url: "your_api_endpoint_url",
+    type: "GET",
+    dataType: "json",
+    success: function(response) {
+      eventsArr.push(...response);
+    },
+    error: function(xhr, status, error) {
+      console.log("Error: " + error);
+    }
+  });
+}
+
+function uploadEvents() {
+  $.ajax({
+    url: "your_api_endpoint_url",
+    type: "POST",
+    dataType: "json",
+    success: function(data) {
+      eventsArr = data
+    },
+    error: function(xhr, status, error) {
+      console.log("Error: " + error);
+    }
+  });
+}
+
+function saveEvents() {
+  localStorage.setItem("events", JSON.stringify(eventsArr));
 }
 
 function convertTime(time) {
